@@ -1,6 +1,4 @@
 import * as React from 'react';
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 import Grid from '@mui/material/Grid2';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -122,12 +120,6 @@ export default function AddressForm() {
                     autoComplete="shipping country"
                     required
                     size="small"
-                />
-            </FormGrid>
-            <FormGrid size={{ xs: 12 }}>
-                <FormControlLabel
-                    control={<Checkbox name="saveAddress" value="yes" />}
-                    label="Use this address for payment details"
                 />
             </FormGrid>
         </Grid>

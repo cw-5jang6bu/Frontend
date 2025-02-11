@@ -4,10 +4,12 @@ import Avatar from '@mui/material/Avatar';
 import AvatarGroup from '@mui/material/AvatarGroup';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid2';
-import Pagination from '@mui/material/Pagination';
 import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
 import NavigateNextRoundedIcon from '@mui/icons-material/NavigateNextRounded';
+import Button from "@mui/material/Button";
+import { useNavigate } from 'react-router-dom';
+
 
 const articleInfo = [
     {
@@ -179,6 +181,7 @@ Author.propTypes = {
 };
 
 export default function Latest() {
+    const navigate = useNavigate();
     const [focusedCardIndex, setFocusedCardIndex] = React.useState(null);
 
     const handleFocus = (index) => {
@@ -237,8 +240,16 @@ export default function Latest() {
                     </Grid>
                 ))}
             </Grid>
-            <Box sx={{ display: 'flex', flexDirection: 'row', pt: 4, justifyContent: 'center' }}>
-                <Pagination hidePrevButton hideNextButton count={10} boundaryCount={10} />
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 4 }}>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    size="large"
+                    sx={{ borderRadius: 2, px: 4, py: 1.5 }}
+                    onClick={() => navigate('/checkout')}
+                >
+                    Order
+                </Button>
             </Box>
         </div>
     );

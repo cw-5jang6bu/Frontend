@@ -19,6 +19,7 @@ import PaymentForm from '../Components/CheckOut/Payment';
 import Review from '../Components/CheckOut/Review';
 import SitemarkIcon from '../Components/CheckOut/SitemarkIcon';
 import AppTheme from '../Components/SharedTheme/AppTheme';
+import {useNavigate} from "react-router-dom";
 
 const steps = ['Shipping address', 'Payment details', 'Review your order'];
 function getStepContent(step) {
@@ -41,6 +42,7 @@ export default function Checkout(props) {
     const handleBack = () => {
         setActiveStep(activeStep - 1);
     };
+    const navigate = useNavigate();
     return (
         <AppTheme {...props}>
             <CssBaseline enableColorScheme />
@@ -201,8 +203,9 @@ export default function Checkout(props) {
                                 <Button
                                     variant="contained"
                                     sx={{ alignSelf: 'start', width: { xs: '100%', sm: 'auto' } }}
+                                    onClick={() => navigate('/')}
                                 >
-                                    Go to my orders
+                                    Go to Items List
                                 </Button>
                             </Stack>
                         ) : (

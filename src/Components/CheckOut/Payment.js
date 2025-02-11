@@ -13,10 +13,8 @@ import RadioGroup from '@mui/material/RadioGroup';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
-import AccountBalanceRoundedIcon from '@mui/icons-material/AccountBalanceRounded';
 import CreditCardRoundedIcon from '@mui/icons-material/CreditCardRounded';
 import SimCardRoundedIcon from '@mui/icons-material/SimCardRounded';
-import WarningRoundedIcon from '@mui/icons-material/WarningRounded';
 
 const Card = styled(MuiCard)(({ theme }) => ({
     border: '1px solid',
@@ -125,6 +123,7 @@ export default function PaymentForm() {
                     onChange={handlePaymentTypeChange}
                     sx={{
                         display: 'flex',
+                        justifyContent: 'center',
                         flexDirection: { xs: 'column', sm: 'row' },
                         gap: 2,
                     }}
@@ -157,37 +156,6 @@ export default function PaymentForm() {
                                     ]}
                                 />
                                 <Typography sx={{ fontWeight: 'medium' }}>Card</Typography>
-                            </CardContent>
-                        </CardActionArea>
-                    </Card>
-                    <Card selected={paymentType === 'bankTransfer'}>
-                        <CardActionArea
-                            onClick={() => setPaymentType('bankTransfer')}
-                            sx={{
-                                '.MuiCardActionArea-focusHighlight': {
-                                    backgroundColor: 'transparent',
-                                },
-                                '&:focus-visible': {
-                                    backgroundColor: 'action.hover',
-                                },
-                            }}
-                        >
-                            <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                <AccountBalanceRoundedIcon
-                                    fontSize="small"
-                                    sx={[
-                                        (theme) => ({
-                                            color: 'grey.400',
-                                            ...theme.applyStyles('dark', {
-                                                color: 'grey.600',
-                                            }),
-                                        }),
-                                        paymentType === 'bankTransfer' && {
-                                            color: 'primary.main',
-                                        },
-                                    ]}
-                                />
-                                <Typography sx={{ fontWeight: 'medium' }}>Bank account</Typography>
                             </CardContent>
                         </CardActionArea>
                     </Card>
@@ -273,47 +241,6 @@ export default function PaymentForm() {
                             </FormGrid>
                         </Box>
                     </PaymentContainer>
-                    <FormControlLabel
-                        control={<Checkbox name="saveCard" />}
-                        label="Remember credit card details for next time"
-                    />
-                </Box>
-            )}
-            {paymentType === 'bankTransfer' && (
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                    <Alert severity="warning" icon={<WarningRoundedIcon />}>
-                        Your order will be processed once we receive the funds.
-                    </Alert>
-                    <Typography variant="subtitle1" sx={{ fontWeight: 'medium' }}>
-                        Bank account
-                    </Typography>
-                    <Typography variant="body1" gutterBottom>
-                        Please transfer the payment to the bank account details shown below.
-                    </Typography>
-                    <Box sx={{ display: 'flex', gap: 1 }}>
-                        <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-                            Bank:
-                        </Typography>
-                        <Typography variant="body1" sx={{ fontWeight: 'medium' }}>
-                            Mastercredit
-                        </Typography>
-                    </Box>
-                    <Box sx={{ display: 'flex', gap: 1 }}>
-                        <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-                            Account number:
-                        </Typography>
-                        <Typography variant="body1" sx={{ fontWeight: 'medium' }}>
-                            123456789
-                        </Typography>
-                    </Box>
-                    <Box sx={{ display: 'flex', gap: 1 }}>
-                        <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-                            Routing number:
-                        </Typography>
-                        <Typography variant="body1" sx={{ fontWeight: 'medium' }}>
-                            987654321
-                        </Typography>
-                    </Box>
                 </Box>
             )}
         </Stack>
