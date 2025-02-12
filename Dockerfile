@@ -1,28 +1,26 @@
-# 1️⃣ Build Stage
-FROM node:20-alpine AS build
+# 1단계: React 애플리케이션 빌드
+FROM node:20 AS build
 WORKDIR /app
-COPY package*.json ./
+
+# 의존성 설치
+COPY package.json package-lock.json ./
 RUN npm install
+
+# 소스 코드 복사 및 빌드
 COPY . .
 RUN npm run build
 
+# 2단계: NGINX로 빌드된 파일 서빙
+FROM nginx:alpine
 
-FROM node:20-alpine as builder
+# 빌드된 정적 파일 복사
+COPY --from=build /app/build /usr/share/nginx/html
 
-# Copy app's source code to the /app directory
-COPY . /app
+# NGINX 설정 파일 복사
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# The application's directory will be the working directory
-WORKDIR /app
+# 80 포트 노출
+EXPOSE 80
 
-# Install Node.js dependencies defined in '/app/packages.json'
-RUN npm install
-
-FROM node:20-alpine
-COPY --from=builder /app /app
-WORKDIR /app
-ENV PORT 5000
-EXPOSE 5000
-
-# Start the application
-CMD ["npm", "start"]
+# NGINX 실행
+CMD ["nginx", "-g", "daemon off;"]
