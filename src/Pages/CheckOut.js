@@ -21,15 +21,15 @@ import SitemarkIcon from '../Components/CheckOut/SitemarkIcon';
 import AppTheme from '../Components/SharedTheme/AppTheme';
 import {useNavigate} from "react-router-dom";
 
-const steps = ['Shipping address', 'Payment details', 'Review your order'];
+const steps = ['Payment details'];
 function getStepContent(step) {
     switch (step) {
+        // case 0:
+        //     return <AddressForm />;
         case 0:
-            return <AddressForm />;
-        case 1:
             return <PaymentForm />;
-        case 2:
-            return <Review />;
+        // case 1:
+        //     return <Review />;
         default:
             throw new Error('Unknown step');
     }
@@ -62,33 +62,6 @@ export default function Checkout(props) {
                     },
                 }}
             >
-                <Grid
-                    size={{ xs: 12, sm: 5, lg: 4 }}
-                    sx={{
-                        display: { xs: 'none', md: 'flex' },
-                        flexDirection: 'column',
-                        backgroundColor: 'background.paper',
-                        borderRight: { sm: 'none', md: '1px solid' },
-                        borderColor: { sm: 'none', md: 'divider' },
-                        alignItems: 'start',
-                        pt: 16,
-                        px: 10,
-                        gap: 4,
-                    }}
-                >
-                    <SitemarkIcon />
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            flexGrow: 1,
-                            width: '100%',
-                            maxWidth: 500,
-                        }}
-                    >
-                        <Info totalPrice={activeStep >= 2 ? '$144.97' : '$134.98'} />
-                    </Box>
-                </Grid>
                 <Grid
                     size={{ sm: 12, md: 7, lg: 8 }}
                     sx={{

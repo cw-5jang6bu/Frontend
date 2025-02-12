@@ -6,7 +6,6 @@ import AppAppBar from '../Components/AppBar/AppBar';
 import Latest from '../Components/Home/Latest';
 import Footer from '../Components/Footer/Footer';
 
-
 export default function Cart (props) {
     return (
         <AppTheme {...props}>

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -13,6 +14,7 @@ import { styled } from '@mui/material/styles';
 import AppTheme from '../Components/SharedTheme/AppTheme';
 import { SitemarkIcon } from '../Components/CustomIcons/CustomIcons';
 
+// 스타일 설정
 const Card = styled(MuiCard)(({ theme }) => ({
     display: 'flex',
     flexDirection: 'column',
@@ -21,168 +23,89 @@ const Card = styled(MuiCard)(({ theme }) => ({
     padding: theme.spacing(4),
     gap: theme.spacing(2),
     margin: 'auto',
-    boxShadow:
-        'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
+    boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
     [theme.breakpoints.up('sm')]: {
         width: '450px',
     },
-    ...theme.applyStyles('dark', {
-        boxShadow:
-            'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
-    }),
 }));
 
 const SignUpContainer = styled(Stack)(({ theme }) => ({
-    height: 'calc((1 - var(--template-frame-height, 0)) * 100dvh)',
-    minHeight: '100%',
+    height: '100vh',
     padding: theme.spacing(2),
-    [theme.breakpoints.up('sm')]: {
-        padding: theme.spacing(4),
-    },
-    '&::before': {
-        content: '""',
-        display: 'block',
-        position: 'absolute',
-        zIndex: -1,
-        inset: 0,
-        backgroundImage:
-            'radial-gradient(ellipse at 50% 50%, hsl(210, 100%, 97%), hsl(0, 0%, 100%))',
-        backgroundRepeat: 'no-repeat',
-        ...theme.applyStyles('dark', {
-            backgroundImage:
-                'radial-gradient(at 50% 50%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))',
-        }),
-    },
+    justifyContent: 'center',
+    alignItems: 'center',
 }));
 
 export default function SignUp(props) {
     const navigate = useNavigate();
+    const [responseMessage, setResponseMessage] = React.useState('');
+    const [email, setEmail] = React.useState('');
+    const [password, setPassword] = React.useState('');
     const [emailError, setEmailError] = React.useState(false);
-    const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
     const [passwordError, setPasswordError] = React.useState(false);
-    const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
-    const [nameError, setNameError] = React.useState(false);
-    const [nameErrorMessage, setNameErrorMessage] = React.useState('');
 
-    const validateInputs = () => {
-        const email = document.getElementById('email');
-        const password = document.getElementById('password');
-        const name = document.getElementById('name');
-
-        let isValid = true;
-
-        if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
-            setEmailError(true);
-            setEmailErrorMessage('Please enter a valid email address.');
-            isValid = false;
-        } else {
-            setEmailError(false);
-            setEmailErrorMessage('');
-        }
-
-        if (!password.value || password.value.length < 6) {
-            setPasswordError(true);
-            setPasswordErrorMessage('Password must be at least 6 characters long.');
-            isValid = false;
-        } else {
-            setPasswordError(false);
-            setPasswordErrorMessage('');
-        }
-
-        if (!name.value || name.value.length < 1) {
-            setNameError(true);
-            setNameErrorMessage('Name is required.');
-            isValid = false;
-        } else {
-            setNameError(false);
-            setNameErrorMessage('');
-        }
-
-        return isValid;
-    };
-
-    const handleSubmit = (event) => {
+    // 폼 제출 처리
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        if (validateInputs()) {
+        if (event) {
             const data = new FormData(event.currentTarget);
-            console.log({
-                name: data.get('name'),
+            const payload = {
                 email: data.get('email'),
                 password: data.get('password'),
-            });
-            navigate('/signin'); // 회원가입 성공 후 로그인 페이지로 이동
+            };
+
+            try {
+                const response = await axios.post('http://localhost:8081/members/register', payload);
+                console.log("Signup successful:", response.data);
+                // 회원가입 성공 후 로그인 페이지로 이동
+                navigate('/signin');
+            } catch (error) {
+                console.error("Error signing up:", error);
+                // 필요시 에러 메시지를 사용자에게 표시할 수 있습니다.
+            }
         }
     };
+
+    // const handleSubmit =  (e) => {
+    //     e.preventDefault(); // 폼 제출 시 페이지 리로드 방지
+    //     const userData = {email: email, password: password};
+    //     console.log(userData.email);
+    //     console.log("hi");
+    // };
 
     return (
         <AppTheme {...props}>
-            <CssBaseline enableColorScheme />
-            <SignUpContainer direction="column" justifyContent="space-between">
+            <CssBaseline />
+            <SignUpContainer>
                 <Card variant="outlined">
                     <SitemarkIcon />
-                    <Typography
-                        component="h1"
-                        variant="h4"
-                        sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
-                    >
-                        Sign up
+                    <Typography component="h1" variant="h4" sx={{ textAlign: 'center' }}>
+                        Sign Up
                     </Typography>
-                    <Box
-                        component="form"
-                        onSubmit={handleSubmit}
-                        sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
-                    >
+                    <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                         <FormControl>
-                            <FormLabel htmlFor="name">Full name</FormLabel>
-                            <TextField
-                                autoComplete="name"
-                                name="name"
-                                required
-                                fullWidth
-                                id="name"
-                                placeholder="Jon Snow"
-                                error={nameError}
-                                helperText={nameErrorMessage}
-                                color={nameError ? 'error' : 'primary'}
-                            />
-                        </FormControl>
-                        <FormControl>
-                            <FormLabel htmlFor="email">Email</FormLabel>
+                            <FormLabel>Email</FormLabel>
                             <TextField
                                 required
                                 fullWidth
-                                id="email"
                                 placeholder="your@email.com"
-                                name="email"
-                                autoComplete="email"
-                                variant="outlined"
-                                error={emailError}
-                                helperText={emailErrorMessage}
-                                color={passwordError ? 'error' : 'primary'}
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                             />
                         </FormControl>
                         <FormControl>
-                            <FormLabel htmlFor="password">Password</FormLabel>
+                            <FormLabel>Password</FormLabel>
                             <TextField
                                 required
                                 fullWidth
-                                name="password"
-                                placeholder="••••••"
                                 type="password"
-                                id="password"
-                                autoComplete="new-password"
-                                variant="outlined"
-                                error={passwordError}
-                                helperText={passwordErrorMessage}
-                                color={passwordError ? 'error' : 'primary'}
+                                placeholder="••••••"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
                             />
                         </FormControl>
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                        >
-                            Sign up
+                        <Button type="submit" fullWidth variant="contained">
+                            Sign Up
                         </Button>
                     </Box>
                 </Card>
@@ -190,4 +113,6 @@ export default function SignUp(props) {
         </AppTheme>
     );
 }
+
+
 

@@ -26,10 +26,9 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
     backgroundColor: theme.vars
         ? `rgba(${theme.vars.palette.background.defaultChannel} / 0.4)`
         : alpha(theme.palette.background.default, 0.4),
-    boxShadow: (theme.
-        vars || theme).shadows[1],
+    boxShadow: (theme.vars || theme).shadows[1],
     padding: '8px 12px',
-    minHeight: '64px', // AppBar 높이 고정
+    minHeight: '64px',
 }));
 
 const ButtonGroup = styled(Box)(({ theme }) => ({
@@ -43,16 +42,25 @@ export default function AppAppBar() {
     const [isLoggedIn, setIsLoggedIn] = React.useState(false);
     const navigate = useNavigate();
 
+    React.useEffect(() => {
+        const loggedIn = localStorage.getItem('isLoggedIn') === 'true';
+        setIsLoggedIn(loggedIn); // 로그인 상태 유지
+    }, []);
+
     const toggleDrawer = (newOpen) => () => {
         setOpen(newOpen);
     };
 
     const handleSignIn = () => {
+        localStorage.setItem('isLoggedIn', 'true'); // 로그인 상태 저장
         setIsLoggedIn(true);
+        navigate('/'); // 로그인 후 메인 페이지로 이동
     };
 
     const handleSignOut = () => {
+        localStorage.removeItem('isLoggedIn'); // 로그아웃 시 상태 제거
         setIsLoggedIn(false);
+        navigate('/'); // 로그아웃 후 메인 페이지로 이동
     };
 
     return (
@@ -87,7 +95,7 @@ export default function AppAppBar() {
                             </>
                         ) : (
                             <>
-                                <Button color="primary" variant="text" size="small" onClick={handleSignIn}>
+                                <Button color="primary" variant="text" size="small" onClick={() => navigate('/signin')}>
                                     Sign in
                                 </Button>
                                 <Button color="primary" variant="contained" size="small" onClick={() => navigate('/signup')}>
@@ -118,16 +126,10 @@ export default function AppAppBar() {
                                     </IconButton>
                                 </Box>
 
-                                <MenuItem onClick={() => navigate('/cart')}>Cart</MenuItem>
-                                <Divider sx={{ my: 3 }} />
-
                                 {isLoggedIn ? (
                                     <>
-                                        <MenuItem>
-                                            <Button color="primary" fullWidth onClick={() => navigate('/cart')}>
-                                                Cart
-                                            </Button>
-                                        </MenuItem>
+                                        <MenuItem onClick={() => navigate('/cart')}>Cart</MenuItem>
+                                        <Divider sx={{ my: 3 }} />
                                         <MenuItem>
                                             <Button color="primary" variant="outlined" fullWidth onClick={handleSignOut}>
                                                 Sign out
@@ -142,7 +144,7 @@ export default function AppAppBar() {
                                             </Button>
                                         </MenuItem>
                                         <MenuItem>
-                                            <Button color="primary" variant="outlined" fullWidth onClick={handleSignIn}>
+                                            <Button color="primary" variant="outlined" fullWidth onClick={() => navigate('/signin')}>
                                                 Sign in
                                             </Button>
                                         </MenuItem>
@@ -156,3 +158,4 @@ export default function AppAppBar() {
         </AppBar>
     );
 }
+

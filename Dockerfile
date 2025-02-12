@@ -6,8 +6,23 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-# 2️⃣ Export Build Files (Nginx 없이)
-FROM alpine:latest
+
+FROM node:20-alpine as builder
+
+# Copy app's source code to the /app directory
+COPY . /app
+
+# The application's directory will be the working directory
 WORKDIR /app
-COPY --from=build /app/build .
-CMD ["echo", "React build completed."]
+
+# Install Node.js dependencies defined in '/app/packages.json'
+RUN npm install
+
+FROM node:20-alpine
+COPY --from=builder /app /app
+WORKDIR /app
+ENV PORT 5000
+EXPOSE 5000
+
+# Start the application
+CMD ["npm", "start"]

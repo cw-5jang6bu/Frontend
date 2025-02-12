@@ -1,7 +1,4 @@
 import * as React from 'react';
-import PropTypes from 'prop-types';
-import Avatar from '@mui/material/Avatar';
-import AvatarGroup from '@mui/material/AvatarGroup';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid2';
 import Typography from '@mui/material/Typography';
@@ -28,68 +25,6 @@ const articleInfo = [
         description:
             'Our user-centric product design approach is driving significant growth. Learn about the strategies we employ to create products that resonate with users.',
         authors: [{ name: 'Erica Johns', avatar: '/static/images/avatar/6.jpg' }],
-    },
-    {
-        tag: 'Design',
-        title: 'Embracing minimalism in modern design',
-        description:
-            'Minimalism is a key trend in modern design. Discover how our design team incorporates minimalist principles to create clean and impactful user experiences.',
-        authors: [{ name: 'Kate Morrison', avatar: '/static/images/avatar/7.jpg' }],
-    },
-    {
-        tag: 'Company',
-        title: 'Cultivating a culture of innovation',
-        description:
-            'Innovation is at the heart of our company culture. Learn about the initiatives we have in place to foster creativity and drive groundbreaking solutions.',
-        authors: [{ name: 'Cindy Baker', avatar: '/static/images/avatar/3.jpg' }],
-    },
-    {
-        tag: 'Engineering',
-        title: 'Advancing cybersecurity with next-gen solutions',
-        description:
-            'Our next-generation cybersecurity solutions are setting new standards in the industry. Discover how we protect our clients from evolving cyber threats.',
-        authors: [
-            { name: 'Agnes Walker', avatar: '/static/images/avatar/4.jpg' },
-            { name: 'Trevor Henderson', avatar: '/static/images/avatar/5.jpg' },
-        ],
-    },
-    {
-        tag: 'Product',
-        title: 'Enhancing customer experience through innovation',
-        description:
-            'Our innovative approaches are enhancing customer experience. Learn about the new features and improvements that are delighting our users.',
-        authors: [{ name: 'Travis Howard', avatar: '/static/images/avatar/2.jpg' }],
-    },
-    {
-        tag: 'Engineering',
-        title: 'Pioneering sustainable engineering solutions',
-        description:
-            "Learn about our commitment to sustainability and the innovative engineering solutions we're implementing to create a greener future. Discover the impact of our eco-friendly initiatives.",
-        authors: [
-            { name: 'Agnes Walker', avatar: '/static/images/avatar/4.jpg' },
-            { name: 'Trevor Henderson', avatar: '/static/images/avatar/5.jpg' },
-        ],
-    },
-    {
-        tag: 'Product',
-        title: 'Maximizing efficiency with our latest product updates',
-        description:
-            'Our recent product updates are designed to help you maximize efficiency and achieve more. Get a detailed overview of the new features and improvements that can elevate your workflow.',
-        authors: [{ name: 'Travis Howard', avatar: '/static/images/avatar/2.jpg' }],
-    },
-    {
-        tag: 'Design',
-        title: 'Designing for the future: trends and insights',
-        description:
-            'Stay ahead of the curve with the latest design trends and insights. Our design team shares their expertise on creating intuitive and visually stunning user experiences.',
-        authors: [{ name: 'Kate Morrison', avatar: '/static/images/avatar/7.jpg' }],
-    },
-    {
-        tag: 'Company',
-        title: "Our company's journey: milestones and achievements",
-        description:
-            "Take a look at our company's journey and the milestones we've achieved along the way. From humble beginnings to industry leader, discover our story of growth and success.",
-        authors: [{ name: 'Cindy Baker', avatar: '/static/images/avatar/3.jpg' }],
     },
 ];
 
@@ -138,51 +73,27 @@ const TitleTypography = styled(Typography)(({ theme }) => ({
     },
 }));
 
-function Author({ authors }) {
-    return (
-        <Box
-            sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                gap: 2,
-                alignItems: 'center',
-                justifyContent: 'space-between',
-            }}
-        >
-            <Box
-                sx={{ display: 'flex', flexDirection: 'row', gap: 1, alignItems: 'center' }}
-            >
-                <AvatarGroup max={3}>
-                    {authors.map((author, index) => (
-                        <Avatar
-                            key={index}
-                            alt={author.name}
-                            src={author.avatar}
-                            sx={{ width: 24, height: 24 }}
-                        />
-                    ))}
-                </AvatarGroup>
-                <Typography variant="caption">
-                    {authors.map((author) => author.name).join(', ')}
-                </Typography>
-            </Box>
-            <Typography variant="caption">July 14, 2021</Typography>
-        </Box>
-    );
-}
-
-Author.propTypes = {
-    authors: PropTypes.arrayOf(
-        PropTypes.shape({
-            avatar: PropTypes.string.isRequired,
-            name: PropTypes.string.isRequired,
-        }),
-    ).isRequired,
-};
-
 export default function Latest() {
     const navigate = useNavigate();
     const [focusedCardIndex, setFocusedCardIndex] = React.useState(null);
+    const [cartItems, setCartItems] = React.useState([]);
+
+    React.useEffect(() => {
+        //const memberId = localStorage.getItem('LoggedInID');
+        //console.log(memberId);// ✅ localStorage에서 id 가져오기
+        if (true) {
+            fetch(`http://localhost:8082/cart/1/products`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch cart items');
+                    }
+                    return response.json();
+                })
+                .then(data => setCartItems(data))  // ✅ API 응답 데이터를 상태로 설정
+                .catch(error => console.error('Error fetching cart items:', error));
+        }
+    }, []);
+
 
     const handleFocus = (index) => {
         setFocusedCardIndex(index);
@@ -198,47 +109,51 @@ export default function Latest() {
                 Cart
             </Typography>
             <Grid container spacing={4} columns={12} sx={{ my: 4 }}>
-                {articleInfo.map((article, index) => (
-                    <Grid item xs={12} key={index} sx={{ width: '100%' }}>
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                justifyContent: 'space-between',
-                                gap: 1,
-                                height: '150px',  // 일정한 높이 설정
-                                p: 2,
-                                border: '1px solid #e0e0e0',
-                                borderRadius: 2,
-                                boxSizing: 'border-box',  // 패딩 포함
-                                width: '100%'  // 가로 길이 화면에 꽉 차도록 설정
-                            }}
-                        >
-                            <Typography gutterBottom variant="caption" component="div">
-                                {article.tag}
-                            </Typography>
-                            <TitleTypography
-                                gutterBottom
-                                variant="h6"
-                                onFocus={() => handleFocus(index)}
-                                onBlur={handleBlur}
-                                tabIndex={0}
-                                className={focusedCardIndex === index ? 'Mui-focused' : ''}
+                {cartItems.length > 0 ? (
+                    cartItems.map((item, index) => (
+                        <Grid item xs={12} key={index} sx={{ width: '100%' }}>
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    justifyContent: 'space-between',
+                                    gap: 1,
+                                    height: '150px',
+                                    p: 2,
+                                    border: '1px solid #e0e0e0',
+                                    borderRadius: 2,
+                                    boxSizing: 'border-box',
+                                    width: '100%'
+                                }}
                             >
-                                {article.title}
-                                <NavigateNextRoundedIcon
-                                    className="arrow"
-                                    sx={{ fontSize: '1rem' }}
-                                />
-                            </TitleTypography>
-                            <StyledTypography variant="body2" color="text.secondary" gutterBottom>
-                                {article.description}
-                            </StyledTypography>
-
-                            <Author authors={article.authors} />
-                        </Box>
-                    </Grid>
-                ))}
+                                <Typography gutterBottom variant="caption" component="div">
+                                    {item.category || 'Item'}
+                                </Typography>
+                                <TitleTypography
+                                    gutterBottom
+                                    variant="h6"
+                                    onFocus={() => handleFocus(index)}
+                                    onBlur={handleBlur}
+                                    tabIndex={0}
+                                    className={focusedCardIndex === index ? 'Mui-focused' : ''}
+                                >
+                                    {item.name}
+                                    <NavigateNextRoundedIcon
+                                        className="arrow"
+                                        sx={{ fontSize: '1rem' }}
+                                    />
+                                </TitleTypography>
+                                <StyledTypography variant="body2" color="text.secondary" gutterBottom>
+                                    Quantity: {item.stock} | Price: ${item.price}
+                                </StyledTypography>
+                            </Box>
+                        </Grid>
+                    ))
+                ) : (
+                    <Typography variant="body1" color="text.secondary">
+                        No items in your cart.
+                    </Typography>
+                )}
             </Grid>
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 4 }}>
                 <Button

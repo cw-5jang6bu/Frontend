@@ -10,15 +10,9 @@ import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
-import ForgotPassword from '../Components/ForgotPassword/ForgotPasswords';
 import AppTheme from '../Components/SharedTheme/AppTheme';
-import { GoogleIcon, FacebookIcon, SitemarkIcon } from '../Components/CustomIcons/CustomIcons';
-
-// 테스트 계정 정보
-export const testAccount = {
-    email: 'test@example.com',
-    password: 'password123'
-};
+import {  SitemarkIcon } from '../Components/CustomIcons/CustomIcons';
+import axios from "axios";
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: 'flex',
@@ -48,13 +42,24 @@ export default function SignIn(props) {
     const [password, setPassword] = React.useState('');
     const [error, setError] = React.useState('');
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-
-        if (email === testAccount.email && password === testAccount.password) {
-            navigate('/');  // 로그인 성공 시 메인 페이지로 이동
-        } else {
-            setError('Invalid email or password.');
+        setError('');
+        try {
+            const response = await axios.post('http://localhost:8081/members/login',
+                { email, password }
+            );
+            if (response.data) {
+                console.log("로그인 성공: ", response.data);
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('LoggedInID: ', response.data);
+                navigate('/');
+            } else {
+                setError('Invalid email or password');
+            }
+        } catch (error) {
+            console.log("signin error:", error);
+            setError('Invalid email or password');
         }
     };
 
@@ -104,7 +109,7 @@ export default function SignIn(props) {
                         </Button>
                     </Box>
                     <Typography sx={{ textAlign: 'center', marginTop: 2, color: 'green' }}>
-                        Use: test@example.com / password123
+                        Use: kstilliard0@addtoany.com / kD1/h"EMgZzreu
                     </Typography>
                 </Card>
             </SignInContainer>
