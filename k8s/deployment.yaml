@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-app
+  namespace: front
+  labels:
+    app: frontend
+spec:
+  replicas: 2  
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: 034362047320.dkr.ecr.ap-northeast-2.amazonaws.com/cwave01/front:latest  
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          env:
+            - name: REACT_APP_API_URL
+              value: "https://api.example.com"
+      imagePullSecrets:
+        - name: ecr-secret  
