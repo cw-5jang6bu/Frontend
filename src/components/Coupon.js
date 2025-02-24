@@ -14,16 +14,16 @@ const Coupon = ({ onLogout }) => {
     useEffect(() => {
         const fetchCoupon = async () => {
             try {
-                const userId = localStorage.getItem("userid");
-                if (!userId) {
+                const email = localStorage.getItem("email");
+                if (!email) {
                     throw new Error("로그인이 필요합니다.");
                 }
 
-                const response = await api.get(`/coupons/me?userid=${userId}`);
+                const response = await api.get(`/coupons/me?email=${email}`);
                 console.log("API 응답 데이터:", response.data);
-                setCoupon(response.data);
+                setCoupon(response.data || null);
 
-                if (response.data.issued) {
+                if (response.data?.issued) {
                     setShowConfetti(true);
                     setTimeout(() => setShowConfetti(false), 5000);
                 }
@@ -66,7 +66,7 @@ const Coupon = ({ onLogout }) => {
                         ) : (
                             <Stack spacing={3} alignItems="center">
                                 <Typography variant="h6" sx={{ fontWeight: 600, color: "#222" }}>
-                                    {coupon?.userid} 님
+                                    {coupon?.email || "사용자"} 님 {/* ✅ 오류 방지 */}
                                 </Typography>
 
                                 {coupon?.issued ? (
@@ -144,7 +144,7 @@ const Coupon = ({ onLogout }) => {
                                     }}
                                     fullWidth
                                     onClick={() => {
-                                        localStorage.removeItem("userid");
+                                        localStorage.removeItem("email"); // ✅ 이메일 기반으로 변경
                                         onLogout();
                                     }}
                                 >

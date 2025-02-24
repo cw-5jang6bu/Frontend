@@ -4,25 +4,31 @@ import { motion } from "framer-motion";
 import api from "../services/api";
 
 const Login = ({ onLogin }) => {
-    const [credentials, setCredentials] = useState({ userid: "", password: "" });
+    const [credentials, setCredentials] = useState({ email: "", password: "" });
     const [error, setError] = useState("");
     const isMobile = useMediaQuery("(max-width:600px)");
 
+    // 입력값 변경 핸들러
     const handleChange = (e) => {
         setCredentials({ ...credentials, [e.target.name]: e.target.value });
     };
 
+    // 로그인 요청 처리
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
 
         try {
-            const response = await api.post("/auth/login", credentials);
+            const response = await api.post("/auth/login", {
+                email: credentials.email,
+                password: credentials.password,
+            });
+
             alert(response.data.message);
-            localStorage.setItem("userid", credentials.userid);
+            localStorage.setItem("email", credentials.email);
             onLogin();
         } catch (error) {
-            setError("로그인 실패. 사용자 이름 또는 비밀번호를 확인하세요.");
+            setError("로그인 실패. 이메일 또는 비밀번호를 확인하세요.");
         }
     };
 
@@ -35,7 +41,7 @@ const Login = ({ onLogin }) => {
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                backgroundColor: "#F9F9F9", // 연한 그레이 배경
+                backgroundColor: "#F9F9F9", // 배경색 조정
             }}
         >
             <motion.div
@@ -45,7 +51,7 @@ const Login = ({ onLogin }) => {
                 style={{
                     width: "100%",
                     display: "flex",
-                    justifyContent: "center", // ✅ **가운데 정렬 보장**
+                    justifyContent: "center", // 가운데 정렬
                 }}
             >
                 <Card
@@ -55,8 +61,8 @@ const Login = ({ onLogin }) => {
                         borderRadius: "16px",
                         boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.08)",
                         backgroundColor: "#FFFFFF",
-                        width: isMobile ? "90%" : "100%", // ✅ **모바일에서 적절한 너비 조정**
-                        maxWidth: "400px", // ✅ **너무 넓어지지 않도록 제한**
+                        width: isMobile ? "90%" : "100%", // 모바일 너비 조정
+                        maxWidth: "400px",
                     }}
                 >
                     <CardContent>
@@ -70,14 +76,13 @@ const Login = ({ onLogin }) => {
                         <form onSubmit={handleSubmit}>
                             <TextField
                                 fullWidth
-                                label="아이디"
+                                label="이메일"
                                 variant="outlined"
                                 margin="normal"
-                                name="userid"
-                                value={credentials.userid}
+                                name="email"
+                                value={credentials.email}
                                 onChange={handleChange}
                                 sx={{
-                                    borderRadius: "8px",
                                     "& .MuiOutlinedInput-root": {
                                         borderRadius: "12px",
                                     },
@@ -93,7 +98,6 @@ const Login = ({ onLogin }) => {
                                 value={credentials.password}
                                 onChange={handleChange}
                                 sx={{
-                                    borderRadius: "8px",
                                     "& .MuiOutlinedInput-root": {
                                         borderRadius: "12px",
                                     },
@@ -110,7 +114,7 @@ const Login = ({ onLogin }) => {
                                         fontSize: "1rem",
                                         fontWeight: "bold",
                                         borderRadius: "30px",
-                                        backgroundColor: "#6AAD47", // ✅ **올리브영 메인 컬러**
+                                        backgroundColor: "#6AAD47", // 올리브영 스타일 컬러
                                         "&:hover": { backgroundColor: "#5B9E3B" },
                                     }}
                                 >
