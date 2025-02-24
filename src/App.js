@@ -1,41 +1,34 @@
-import './App.css';
-import SignIn from './Pages/SignIn';
-import SignUp from './Pages/SignUp';
-import Checkout from "./Pages/CheckOut";
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Home from "./Pages/Home";
-import Cart from "./Pages/Cart";
+import React, { useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import LoginPage from "./pages/LoginPage";
+import CouponPage from "./pages/CouponPage";
+import { ThemeProvider, CssBaseline } from "@mui/material";
+import theme from "./theme";
 
-// const hiddenNavPaths = ['/signin', '/signup', '/checkout'];
-//
-// // 네비게이션 표시 여부를 결정하는 Layout 컴포넌트
-// function Layout({ children }) {
-//     const location = useLocation();
-//     const hideNavBar = hiddenNavPaths.includes(location.pathname); // 여러 경로 체크
-//
-//     return (
-//         <div>
-//             {!hideNavBar && <AppBar />}  {/* 조건부 렌더링 */}
-//             {children}
-//         </div>
-//     );
-// }
+const App = () => {
+    const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem("token"));
 
-function App() {
+    const handleLogin = () => {
+        setIsAuthenticated(true);
+    };
+
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        setIsAuthenticated(false);
+    };
+
     return (
-        <Router>
-            {/*<Layout>*/}
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <Router>
                 <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/signin" element={<SignIn />} />
-                    <Route path="/signup" element={<SignUp />} />
-                    <Route path="/checkout" element={<Checkout />} />
-                    <Route path="/cart" element={<Cart />} />
+                    <Route path="/" element={isAuthenticated ? <Navigate replace to="/coupon" /> : <LoginPage onLogin={handleLogin} />} />
+                    <Route path="/coupon" element={isAuthenticated ? <CouponPage onLogout={handleLogout} /> : <Navigate replace to="/" />} />
                 </Routes>
-            {/*</Layout>*/}
-        </Router>
+            </Router>
+        </ThemeProvider>
     );
-}
+};
 
 export default App;
 
