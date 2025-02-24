@@ -24,5 +24,5 @@ spec:
           env:
             - name: REACT_APP_API_URL
               value: "https://api.example.com"
-      imagePullSecrets:
-        - name: ecr-secret  
+      # imagePullSecrets:
+      #   - name: ecr-secret  
