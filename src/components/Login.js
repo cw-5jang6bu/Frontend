@@ -4,13 +4,19 @@ import { motion } from "framer-motion";
 import api from "../services/api";
 
 const Login = ({ onLogin }) => {
-    const [credentials, setCredentials] = useState({ email: "", password: "" });
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const isMobile = useMediaQuery("(max-width:600px)");
 
-    // 입력값 변경 핸들러
-    const handleChange = (e) => {
-        setCredentials({ ...credentials, [e.target.name]: e.target.value });
+    // 이메일 변경 핸들러
+    const handleEmailChange = (e) => {
+        setEmail(e.target.value);
+    };
+
+    // 비밀번호 변경 핸들러
+    const handlePasswordChange = (e) => {
+        setPassword(e.target.value);
     };
 
     // 로그인 요청 처리
@@ -20,12 +26,12 @@ const Login = ({ onLogin }) => {
 
         try {
             const response = await api.post("/auth/login", {
-                email: credentials.email,
-                password: credentials.password,
+                email: email,
+                password: password,
             });
 
             alert(response.data.message);
-            localStorage.setItem("email", credentials.email);
+            localStorage.setItem("email", email);
             onLogin();
         } catch (error) {
             setError("로그인 실패. 이메일 또는 비밀번호를 확인하세요.");
@@ -80,8 +86,8 @@ const Login = ({ onLogin }) => {
                                 variant="outlined"
                                 margin="normal"
                                 name="email"
-                                value={credentials.email}
-                                onChange={handleChange}
+                                value={email}
+                                onChange={handleEmailChange}
                                 sx={{
                                     "& .MuiOutlinedInput-root": {
                                         borderRadius: "12px",
@@ -95,8 +101,8 @@ const Login = ({ onLogin }) => {
                                 type="password"
                                 margin="normal"
                                 name="password"
-                                value={credentials.password}
-                                onChange={handleChange}
+                                value={password}
+                                onChange={handlePasswordChange}
                                 sx={{
                                     "& .MuiOutlinedInput-root": {
                                         borderRadius: "12px",
@@ -130,3 +136,4 @@ const Login = ({ onLogin }) => {
 };
 
 export default Login;
+
