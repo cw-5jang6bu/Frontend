@@ -3,6 +3,3 @@ kind: ConfigMap
 metadata:
   name: frontend-config
   namespace: member
-# data:
-#   REACT_APP_API_URL: "https://api.example.com"  
-#   REACT_APP_ENV: "production"
