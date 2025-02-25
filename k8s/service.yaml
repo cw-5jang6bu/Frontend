@@ -10,4 +10,4 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 80
-  type: LoadBalancer  # 외부에서 접근 가능하게 설정
+  type: ClusterIP  # ALB를 통해 접근

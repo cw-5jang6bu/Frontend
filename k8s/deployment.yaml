@@ -20,5 +20,3 @@ spec:
           image: 034362047320.dkr.ecr.ap-northeast-2.amazonaws.com/cwave01/front:latest
           ports:
             - containerPort: 80
-      imagePullSecrets:
-        - name: ecr-secret  
