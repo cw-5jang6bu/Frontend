@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Card, CardContent, Typography, Chip, CircularProgress, Button, Container, Stack } from "@mui/material";
 import { motion } from "framer-motion";
 import { useMediaQuery } from "@mui/material";
-import Confetti from "react-confetti"; // 🎉 빵빠레 효과 추가
-import api from "../services/api";
+import Confetti from "react-confetti";
+import api from "../services/api";  // ✅ API 설정 가져오기
 
 const Coupon = ({ onLogout }) => {
     const [coupon, setCoupon] = useState(null);
@@ -13,14 +13,22 @@ const Coupon = ({ onLogout }) => {
 
     useEffect(() => {
         const fetchCoupon = async () => {
-            try {
-                const email = localStorage.getItem("email");
-                if (!email) {
-                    throw new Error("로그인이 필요합니다.");
-                }
+            const email = localStorage.getItem("email");
 
-                const response = await api.get(`/coupons/me?email=${email}`);
-                console.log("API 응답 데이터:", response.data);
+            if (!email) {
+                console.warn("🚨 로그인이 필요합니다.");
+                setLoading(false);
+                return;
+            }
+
+            try {
+                console.log(`🔍 API 요청: /coupons/me?email=${email}`);
+
+                const response = await api.get("/coupons/me", {
+                    params: { email },
+                });
+
+                console.log("✅ API 응답 데이터:", response.data);
                 setCoupon(response.data || null);
 
                 if (response.data?.issued) {
@@ -28,11 +36,28 @@ const Coupon = ({ onLogout }) => {
                     setTimeout(() => setShowConfetti(false), 5000);
                 }
             } catch (error) {
-                console.error("쿠폰 정보를 불러오는 중 오류 발생", error);
+                console.error("🚨 쿠폰 정보를 불러오는 중 오류 발생:", error);
+
+                if (error.response) {
+                    console.error("🔴 서버 응답 오류:", error.response);
+                } else if (error.request) {
+                    console.error("🟡 요청은 갔으나 응답이 없음:", error.request);
+                } else {
+                    console.error("🟢 설정 오류:", error.message);
+                }
+
+                setCoupon(null); // ✅ 쿠폰 정보가 없을 경우 명확한 상태 설정
+
+                if (error.response?.status === 403) {
+                    alert("⏳ 인증이 만료되었습니다. 다시 로그인해주세요.");
+                    localStorage.removeItem("email");
+                    onLogout();
+                }
             } finally {
                 setLoading(false);
             }
         };
+
         fetchCoupon();
     }, []);
 
@@ -46,7 +71,7 @@ const Coupon = ({ onLogout }) => {
                 justifyContent: "center",
             }}
         >
-            {showConfetti && <Confetti numberOfPieces={300} />} {/* 🎊 더 풍성한 빵빠레 효과 */}
+            {showConfetti && <Confetti numberOfPieces={300} />}
 
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
                 <Card
@@ -59,19 +84,20 @@ const Coupon = ({ onLogout }) => {
                     }}
                 >
                     <CardContent>
-                        <Typography variant="h5" sx={{ fontWeight: 700, color: "#78be20" }}> 🎟 내 쿠폰 </Typography>
+                        <Typography variant="h5" sx={{ fontWeight: 700, color: "#78be20" }}>
+                            🎟 내 쿠폰
+                        </Typography>
 
                         {loading ? (
                             <CircularProgress />
                         ) : (
                             <Stack spacing={3} alignItems="center">
                                 <Typography variant="h6" sx={{ fontWeight: 600, color: "#222" }}>
-                                    {coupon?.email || "사용자"} 님 {/* ✅ 오류 방지 */}
+                                    {coupon?.email || "사용자"} 님
                                 </Typography>
 
                                 {coupon?.issued ? (
                                     <>
-                                        {/* 🎊 "축하합니다!" 애니메이션 */}
                                         <motion.div
                                             initial={{ opacity: 0, y: -20 }}
                                             animate={{ opacity: 1, y: 0 }}
@@ -86,7 +112,6 @@ const Coupon = ({ onLogout }) => {
                                             🎈 축하합니다! 🎈
                                         </motion.div>
 
-                                        {/* 🎉 쿠폰 발급 효과 */}
                                         <motion.div
                                             initial={{ scale: 0 }}
                                             animate={{ scale: 1 }}
@@ -112,14 +137,6 @@ const Coupon = ({ onLogout }) => {
                                                 color: "white",
                                             }}
                                         />
-
-                                        {/* 🎈 풍선 애니메이션 추가 */}
-                                        <motion.div
-                                            animate={{ y: [10, -10, 10] }}
-                                            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                                        >
-                                            🎈🎈🎈
-                                        </motion.div>
                                     </>
                                 ) : (
                                     <Chip
@@ -144,7 +161,7 @@ const Coupon = ({ onLogout }) => {
                                     }}
                                     fullWidth
                                     onClick={() => {
-                                        localStorage.removeItem("email"); // ✅ 이메일 기반으로 변경
+                                        localStorage.removeItem("email");
                                         onLogout();
                                     }}
                                 >
@@ -160,3 +177,6 @@ const Coupon = ({ onLogout }) => {
 };
 
 export default Coupon;
+
+
+

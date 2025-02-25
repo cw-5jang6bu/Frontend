@@ -1,14 +1,8 @@
 import axios from "axios";
 
-//const API_BASE_URL = "http://ac26a7732cb91416fbd6cea6edc0da4f-650605713.ap-northeast-2.elb.amazonaws.com";
-
-const API_BASE_URL = "http://member-service.member.svc.cluster.local"
-
 const api = axios.create({
-    baseURL: API_BASE_URL,
-    headers: {
-        "Content-Type": "application/json",
-    },
+    baseURL: "http://localhost:8080",  // ✅ 백엔드 주소
+    withCredentials: true,  // ✅ 쿠키 포함 (인증 필요할 경우)
 });
 
 export default api;
