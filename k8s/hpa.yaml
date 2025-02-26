@@ -9,7 +9,7 @@ spec:
     kind: Deployment
     name: frontend-app
   minReplicas: 2
-  maxReplicas: 1000 # Karpenter가 확장할 수 있도록 상한선을 높임
+  maxReplicas: 10 # Karpenter가 확장할 수 있도록 상한선을 높임
   metrics:
     - type: Resource
       resource:
