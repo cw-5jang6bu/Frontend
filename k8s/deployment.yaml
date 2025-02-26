@@ -20,3 +20,8 @@ spec:
           image: 034362047320.dkr.ecr.ap-northeast-2.amazonaws.com/cwave01/front:latest
           ports:
             - containerPort: 80
+          resources:
+            requests:
+              cpu: "100m"   # 최소 요청 (HPA가 감지 가능)
+            limits:
+              cpu: "500m"   # 최대 제한
