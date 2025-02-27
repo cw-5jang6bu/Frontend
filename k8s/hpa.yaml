@@ -17,16 +17,16 @@ spec:
         target:
           type: Utilization
           averageUtilization: 50
-  behavior:
-    scaleUp:
-      stabilizationWindowSeconds: 30 # 빠르게 스케일업할 수 있도록 조정
-      policies:
-        - type: Percent
-          value: 100 # 100%씩 증가 (즉, 기존 대비 2배씩 증가)
-          periodSeconds: 15
-    scaleDown:
-      stabilizationWindowSeconds: 60 # 다운스케일은 천천히
-      policies:
-        - type: Percent
-          value: 50 # 50%씩 감소
-          periodSeconds: 60
+#  behavior:
+#    scaleUp:
+#      stabilizationWindowSeconds: 30 # 빠르게 스케일업할 수 있도록 조정
+#      policies:
+#        - type: Percent
+#          value: 100 # 100%씩 증가 (즉, 기존 대비 2배씩 증가)
+#          periodSeconds: 15
+#    scaleDown:
+#      stabilizationWindowSeconds: 60 # 다운스케일은 천천히
+#      policies:
+#        - type: Percent
+#          value: 50 # 50%씩 감소
+#          periodSeconds: 60
